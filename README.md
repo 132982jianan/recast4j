@@ -7,9 +7,9 @@
 Recast4j
 ========
 
-Java Port of Recast and Detour navigation mesh toolset.
+Java Port of Recast and Detour(重铸与绕行) navigation mesh(寻路网格模型) toolset.
 
-![screenshot of a navmesh baked with the sample program](/recast-demo/screenshot.png?raw=true)
+![screenshot of a navmesh baked with the sample program](./recast-demo/screenshot.png?raw=true)
 
 ## Recast
 
