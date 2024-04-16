@@ -1,2 +1,11 @@
-1)NavMeshQuery.java // 主要是根据这个来过滤。
+1)NavMeshQuery.java
+    主要是根据这个来过滤,进行查找。
+
+    NavMesh是导航数据，NavMeshQuery是每次寻路都要new一个出来,因为下面2个变量不能共用:
+        2个寻路时被修改的变量：
+            protected final NodePool m_nodePool;
+            protected final NodeQueue m_openList;
+
+        导航数据：
+         protected final NavMesh m_nav;
 
