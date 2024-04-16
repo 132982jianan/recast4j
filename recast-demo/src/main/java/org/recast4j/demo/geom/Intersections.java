@@ -26,6 +26,19 @@ import java.util.Optional;
 
 public class Intersections {
 
+    /**
+     * 直线段和三角形的相交算法
+     * 参考：
+     * https://blog.csdn.net/needmorecode/article/details/81416553
+     * https://blog.csdn.net/u012138730/article/details/80235813
+     *
+     * @param sp
+     * @param sq
+     * @param a
+     * @param b
+     * @param c
+     * @return
+     */
     public static Optional<Float> intersectSegmentTriangle(float[] sp, float[] sq, float[] a, float[] b, float[] c) {
         float v, w;
         float[] ab = vSub(b, a);
@@ -109,7 +122,7 @@ public class Intersections {
             }
         }
 
-        return Optional.of(new float[] { tmin, tmax });
+        return Optional.of(new float[]{tmin, tmax});
     }
 
 }

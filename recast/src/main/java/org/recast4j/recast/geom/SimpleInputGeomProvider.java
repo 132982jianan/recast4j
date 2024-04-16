@@ -96,6 +96,8 @@ public class SimpleInputGeomProvider implements InputGeomProvider {
 
     @Override
     public Iterable<TriMesh> meshes() {
+        // TODO 需要优化的点：在调用时才根据地形数据实时生成所有的trimesh node，这非常耗时！这需要优化
+        //  而原版直接在加载地形数据时就生成了，后面用的是缓存。
         return Collections.singletonList(new TriMesh(vertices, faces));
     }
 

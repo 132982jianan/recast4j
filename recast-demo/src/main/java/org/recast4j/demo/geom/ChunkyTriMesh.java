@@ -212,12 +212,20 @@ public class ChunkyTriMesh {
         return overlap;
     }
 
+    /**
+     * 求取二维平面下与射线有交集的所有trimesh node
+     * @param p
+     * @param q
+     * @return
+     */
     public List<ChunkyTriMeshNode> getChunksOverlappingSegment(float[] p, float[] q) {
         // Traverse tree
         List<ChunkyTriMeshNode> ids = new ArrayList<>();
         int i = 0;
         while (i < nodes.size()) {
             ChunkyTriMeshNode node = nodes.get(i);
+
+            //
             boolean overlap = checkOverlapSegment(p, q, node.bmin, node.bmax);
             boolean isLeafNode = node.i >= 0;
 
@@ -234,6 +242,21 @@ public class ChunkyTriMesh {
         return ids;
     }
 
+    /**
+     * 此方法将node看成是AABB包围盒，通过比较射线起止点p，q与包围盒的x，z坐标的相对位置。
+     * 若存在overlap，则还要判断node是否为叶子节点。
+     * 这里recast为trimesh node建立的模型是一个树状结构，从跟节点触发管理到大的区块，再到晓得区块，直至一个基础node作为叶子节点。
+     * 叶子节点是通过node的属性i来判断，若i小于0代表叶子节点，可以将这个node加入返回数组中; 否则判断下一个。
+     * 注意：这里选取下一个的时候有个分支优化：若既没有overlap，又不是叶子节点，则放弃当前节点下面的所有子孙节点，直接跳转到通过属性i计算出的下一个节点索引处。
+     * 通过上面这一步可以排查绝大多数节点，下面只需要对生育的若干个trimesh node做精选，判断射线是否与它们存在交点，这实际是分2步：
+     *  1是求：射线与三角形所在的平面的交点。
+     *  2是判断交点是否在三角形内部。 参考：Intersections.java#intersectSegmentTriangle
+     * @param p
+     * @param q
+     * @param bmin
+     * @param bmax
+     * @return
+     */
     private boolean checkOverlapSegment(float[] p, float[] q, float[] bmin, float[] bmax) {
         float EPSILON = 1e-6f;
 

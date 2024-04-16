@@ -275,6 +275,7 @@ public class RecastDemo {
             }
 
             if (!mouseOverMenu) {
+                // 将鼠标点击的屏幕坐标转成世界坐标
                 GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 0.0f, modelviewMatrix, projectionMatrix, viewport,
                         rayStart);
                 GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 1.0f, modelviewMatrix, projectionMatrix, viewport,
@@ -285,6 +286,7 @@ public class RecastDemo {
                 if (processHitTest && sample != null) {
                     Optional<Float> hit = Optional.empty();
                     if (inputGeom != null) {
+                        // raycastMesh 传入起点和终点坐标，进行射线检测
                         hit = inputGeom.raycastMesh(rayStart, rayEnd);
                     }
                     if (!hit.isPresent() && sample.getNavMesh() != null) {

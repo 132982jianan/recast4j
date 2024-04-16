@@ -1,5 +1,11 @@
 1)长三月
-    https://blog.csdn.net/needmorecode/category_9277680.html?spm=1001.2014.3001.5482
+    https://blog.csdn.net/needmorecode/category_9277680.html
+
+    寻路最核心的问题：
+           射线与NavMesh求交点==>转为线段和三角形求交点。
+
+    涉及到的问题：
+        x,z在服务端保存，y不从客户端读取(离线和反外挂问题)，而是根据服务器的地形数据实时算出(也就是求出地表高度)。
 
 2)灰派
     https://zhuanlan.zhihu.com/p/583887024
@@ -7,3 +13,6 @@
 3)流子
     https://blog.csdn.net/jiangguilong2000/article/details/125592067
     https://blog.csdn.net/jiangguilong2000/article/details/129184882
+
+4)ivy_0709
+    https://blog.csdn.net/u012138730/category_7764804.html

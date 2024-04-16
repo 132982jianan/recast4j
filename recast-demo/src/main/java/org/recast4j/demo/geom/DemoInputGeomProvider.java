@@ -136,13 +136,25 @@ public class DemoInputGeomProvider implements InputGeomProvider {
         offMeshConnections.retainAll(offMeshConnections.stream().filter(c -> !filter.test(c)).collect(toList()));
     }
 
+    /**
+     * 射线检测
+     *
+     * @param src
+     * @param dst
+     * @return
+     */
     public Optional<Float> raycastMesh(float[] src, float[] dst) {
 
         // Prune hit ray.
+
+        // intersectSegmentAABB 修剪射线
         Optional<float[]> btminmax = Intersections.intersectSegmentAABB(src, dst, bmin, bmax);
+
+        // 将整个navmesh看成一个AABB包围盒，判断射线和包围盒是否有交集，若没有则直接返回，否则将射线不在盒内的部分修剪掉
         if (!btminmax.isPresent()) {
             return Optional.empty();
         }
+
         float btmin = btminmax.get()[0];
         float btmax = btminmax.get()[1];
         float[] p = new float[2], q = new float[2];
@@ -151,6 +163,7 @@ public class DemoInputGeomProvider implements InputGeomProvider {
         q[0] = src[0] + (dst[0] - src[0]) * btmax;
         q[1] = src[2] + (dst[2] - src[2]) * btmax;
 
+        // getChunksOverlappingSegment 求取二维平面下与射线有交集的所有trimesh node(三角网格节点，只考虑x，z坐标)，这一步是粗算，因为不涉及点乘叉乘，执行效率较高
         List<ChunkyTriMeshNode> chunks = chunkyTriMesh.getChunksOverlappingSegment(p, q);
         if (chunks.isEmpty()) {
             return Optional.empty();
@@ -161,12 +174,14 @@ public class DemoInputGeomProvider implements InputGeomProvider {
         for (ChunkyTriMeshNode chunk : chunks) {
             int[] tris = chunk.tris;
             for (int j = 0; j < chunk.tris.length; j += 3) {
-                float[] v1 = new float[] { vertices[tris[j] * 3], vertices[tris[j] * 3 + 1],
-                        vertices[tris[j] * 3 + 2] };
-                float[] v2 = new float[] { vertices[tris[j + 1] * 3], vertices[tris[j + 1] * 3 + 1],
-                        vertices[tris[j + 1] * 3 + 2] };
-                float[] v3 = new float[] { vertices[tris[j + 2] * 3], vertices[tris[j + 2] * 3 + 1],
-                        vertices[tris[j + 2] * 3 + 2] };
+                float[] v1 = new float[]{vertices[tris[j] * 3], vertices[tris[j] * 3 + 1],
+                        vertices[tris[j] * 3 + 2]};
+                float[] v2 = new float[]{vertices[tris[j + 1] * 3], vertices[tris[j + 1] * 3 + 1],
+                        vertices[tris[j + 1] * 3 + 2]};
+                float[] v3 = new float[]{vertices[tris[j + 2] * 3], vertices[tris[j + 2] * 3 + 1],
+                        vertices[tris[j + 2] * 3 + 2]};
+
+                // intersectSegmentTriangle 直线段和三角形的相交算法
                 Optional<Float> t = Intersections.intersectSegmentTriangle(src, dst, v1, v2, v3);
                 if (t.isPresent()) {
                     if (t.get() < tmin) {

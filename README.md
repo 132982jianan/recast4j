@@ -1,6 +1,7 @@
 # 导航网格
 
 ## 1)整体介绍
+
 ![构建状态](https://img.shields.io/github/actions/workflow/status/ppiastucki/recast4j/gradle.yml?branch=main&logo=github)
 
 ![仓库大小](https://img.shields.io/github/repo-size/ppiastucki/recast4j.svg?colorB=lightgray)
@@ -12,10 +13,12 @@
 ![依赖](https://img.shields.io/librariesio/github/ppiastucki/recast4j)
 
 ## 2)Recast4j
-java版本的Recast and Detour导航网格模型工具集.
+
+java版本的Recast(建网格) and Detour(寻路) 导航网格模型工具集.
 ![](./recast-demo/screenshot.png?raw=true)
 
 ## 3)Recast
+
 ```
 Recast是一个为游戏设计的导航网格工具集
 
@@ -30,8 +33,9 @@ Recast通过多步光栅化过程构建导航网格：
     3. 然后由体素网格描述的可步行区域被划分为二维多边形区域组
     4. 导航多边形是通过对生成的二维多边形区域进行三角测量并将其拼接在一起而生成的. 
 ```
-   
+
 ## 4)Detour
+
 ```
 Recast附带Detour，这是一个路径查找和空间推理工具包。您可以在Detour中使用任何导航网格，但当然，使用Recast生成的数据非常适合。
 Retour提供了一个简单的静态导航网格数据表示，适用于许多简单的情况，它还提供了平铺的导航网格表示，允许您在玩家在世界中前进时输入和输出导航数据，并随着世界的变化重新生成导航网格数据的部分。
@@ -76,6 +80,7 @@ Retour提供了一个简单的静态导航网格数据表示，适用于许多�
 ```
 
 ## 6)构建
+
 ```
   1.自己从源码构建
         所有模块都可以使用单个gradle命令构建： 
@@ -128,6 +133,7 @@ Retour提供了一个简单的静态导航网格数据表示，适用于许多�
 ```
 
 ## 7)License
+
 ```
 Recast和Detour已获得ZLib许可，请参阅License.txt了解更多信息。
 ```
