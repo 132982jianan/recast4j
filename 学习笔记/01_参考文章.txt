@@ -1,11 +1,25 @@
 1)长三月
     https://blog.csdn.net/needmorecode/category_9277680.html
 
-    寻路最核心的问题：
+
+    笔记1: // 射线检测原理
+        Recast(建网格) and Detour(寻路)
+
+        寻路最核心的问题：
            射线与NavMesh求交点==>转为线段和三角形求交点。
 
-    涉及到的问题：
-        x,z在服务端保存，y不从客户端读取(离线和反外挂问题)，而是根据服务器的地形数据实时算出(也就是求出地表高度)。
+        涉及到的问题：
+            x,z在服务端保存，y不从客户端读取(离线和反外挂问题)，而是根据服务器的地形数据实时算出(也就是求出地表高度)。
+
+    笔记2: // NavMesh生成原理
+        NavMesh有2类：
+            SoloMesh(静态网格)
+            TileCache(动态添加障碍)
+
+        critterAI、NMGen
+
+        生成原理视频：
+            https://www.bilibili.com/video/BV1cg411U7mB/
 
 2)灰派
     https://zhuanlan.zhihu.com/p/583887024
