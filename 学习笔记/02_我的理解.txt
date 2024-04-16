@@ -1,11 +1,15 @@
 1)NavMeshQuery.java
-    主要是根据这个来过滤,进行查找。
+    1.主要是根据这个来过滤,进行查找。
 
-    NavMesh是导航数据，NavMeshQuery是每次寻路都要new一个出来,因为下面2个变量不能共用:
-        2个寻路时被修改的变量：
+    2.NavMesh是导航数据，要想改为多线程寻路，那么NavMeshQuery是每次寻路都要new一个出来,因为下面2个变量不能共用:
+        2个寻路时被修改的变量(A*寻路)：
             protected final NodePool m_nodePool;
             protected final NodeQueue m_openList;
 
         导航数据：
          protected final NavMesh m_nav;
+
+    3.obj文件可以双击打开，就是个坐标点。  .navmesh则是转化后的二进制数据, 我们寻路也是根据这个来进行的。
+
+
 
