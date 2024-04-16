@@ -8,11 +8,14 @@ import org.recast4j.recast.PolyMesh;
 import org.recast4j.recast.PolyMeshDetail;
 import org.recast4j.recast.RecastBuilder.RecastBuilderResult;
 
+/**
+ * 抽象的导航网格构建器，有2个子类
+ */
 public abstract class AbstractNavMeshBuilder {
 
     protected NavMeshDataCreateParams getNavMeshCreateParams(DemoInputGeomProvider m_geom, float m_cellSize,
-            float m_cellHeight, float m_agentHeight, float m_agentRadius, float m_agentMaxClimb,
-            RecastBuilderResult rcResult) {
+                                                             float m_cellHeight, float m_agentHeight, float m_agentRadius, float m_agentMaxClimb,
+                                                             RecastBuilderResult rcResult) {
         PolyMesh m_pmesh = rcResult.getMesh();
         PolyMeshDetail m_dmesh = rcResult.getMeshDetail();
         NavMeshDataCreateParams params = new NavMeshDataCreateParams();

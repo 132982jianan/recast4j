@@ -40,6 +40,9 @@ import org.recast4j.recast.RecastConfig;
 import org.recast4j.recast.RecastConstants.PartitionType;
 import org.recast4j.recast.geom.InputGeomProvider;
 
+/**
+ * 保留导航网格
+ */
 public class MeshSetReaderWriterTest {
 
     private final MeshSetWriter writer = new MeshSetWriter();

@@ -29,7 +29,7 @@ public class GLU {
     }
 
     public static void glhPerspectivef2(float[] matrix, float fovyInDegrees, float aspectRatio, float znear,
-            float zfar) {
+                                        float zfar) {
         float ymax, xmax;
         ymax = (float) (znear * Math.tan(fovyInDegrees * Math.PI / 360.0));
         xmax = ymax * aspectRatio;
@@ -37,7 +37,7 @@ public class GLU {
     }
 
     private static void glhFrustumf2(float[] matrix, float left, float right, float bottom, float top, float znear,
-            float zfar) {
+                                     float zfar) {
         float temp, temp2, temp3, temp4;
         temp = 2.0f * znear;
         temp2 = right - left;
@@ -62,7 +62,7 @@ public class GLU {
     }
 
     public static int glhUnProjectf(float winx, float winy, float winz, float[] modelview, float[] projection,
-            int[] viewport, float[] objectCoordinate) {
+                                    int[] viewport, float[] objectCoordinate) {
         // Transformation matrices
         float[] m = new float[16], A = new float[16];
         float[] in = new float[4], out = new float[4];

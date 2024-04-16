@@ -19,12 +19,15 @@ import org.recast4j.dynamic.collider.SphereCollider;
 import org.recast4j.dynamic.io.VoxelFile;
 import org.recast4j.dynamic.io.VoxelFileReader;
 
+/**
+ * 动态导航网格
+ */
 public class DynamicNavMeshTest {
 
-    private static final float[] START_POS = new float[] { 70.87453f, 0.0010070801f, 86.69021f };
-    private static final float[] END_POS = new float[] { -50.22061f, 0.0010070801f, -70.761444f };
-    private static final float[] EXTENT = new float[] { 0.1f, 0.1f, 0.1f };
-    private static final float[] SPHERE_POS = new float[] { 45.381645f, 0.0010070801f, 52.68981f };
+    private static final float[] START_POS = new float[]{70.87453f, 0.0010070801f, 86.69021f};
+    private static final float[] END_POS = new float[]{-50.22061f, 0.0010070801f, -70.761444f};
+    private static final float[] EXTENT = new float[]{0.1f, 0.1f, 0.1f};
+    private static final float[] SPHERE_POS = new float[]{45.381645f, 0.0010070801f, 52.68981f};
 
 
     @Test

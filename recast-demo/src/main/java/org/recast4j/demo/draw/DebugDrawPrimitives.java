@@ -19,7 +19,6 @@ freely, subject to the following restrictions:
 package org.recast4j.demo.draw;
 
 public enum DebugDrawPrimitives {
-
     POINTS,
     LINES,
     TRIS,

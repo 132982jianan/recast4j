@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <property name="LOG_DIR" value="./logs"/>
+
+    <!--带高亮显示-->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%highlight(%-5level)] [%thread] %logger{30}.%M\(%F:%L\) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--这个会被异步打印里面调用-->
+    <appender name="ROLLFILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/game.log</file>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/game.%d{yyyyMMdd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>[%-5level][%d{HH:mm:ss.SSS}][%thread][%logger][%L] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--异步打印-->
+    <appender name="ASYNC_ROLLFILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="ROLLFILE"/>
+        <queueSize>1024</queueSize>
+        <maxFlushTime>3000</maxFlushTime>
+    </appender>
+
+
+    <root level="debug">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="ASYNC_ROLLFILE"/>
+    </root>
+</configuration>

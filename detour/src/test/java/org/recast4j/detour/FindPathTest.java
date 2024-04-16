@@ -24,6 +24,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * 寻路
+ */
 public class FindPathTest extends AbstractDetourTest {
 
     private static final Status[] STATUSES = { Status.SUCCSESS, Status.PARTIAL_RESULT, Status.SUCCSESS, Status.SUCCSESS,

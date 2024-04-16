@@ -9,3 +9,5 @@ test-output/
 .classpath
 .gradle
 *.iml
+
+logs

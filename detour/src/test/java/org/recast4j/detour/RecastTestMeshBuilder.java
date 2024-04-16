@@ -26,6 +26,9 @@ import org.recast4j.recast.RecastConfig;
 import org.recast4j.recast.RecastConstants.PartitionType;
 import org.recast4j.recast.geom.InputGeomProvider;
 
+/**
+ * 从obj文件中构建导航网格
+ */
 public class RecastTestMeshBuilder {
 
     private final MeshData meshData;

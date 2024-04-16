@@ -39,7 +39,7 @@ public enum DrawMode {
     DRAWMODE_POLYMESH_DETAIL("Poly Mesh Detils");
     private final String text;
 
-    private DrawMode(String text) {
+    DrawMode(String text) {
         this.text = text;
     }
 
