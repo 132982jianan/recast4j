@@ -1,0 +1,2 @@
+1)NavMeshQuery.java // 主要是根据这个来过滤。
+
