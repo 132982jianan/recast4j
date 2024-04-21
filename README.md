@@ -15,7 +15,7 @@
 ## 2)Recast4j
 
 java版本的Recast(建网格) and Detour(寻路) 导航网格模型工具集.
-![](./recast-demo/screenshot.png?raw=true)
+![](recast-demo/screenshot.png?raw=true)
 
 ## 3)Recast
 
