@@ -86,7 +86,7 @@ public class ChunkyTriMesh {
     }
 
     private void subdivide(BoundsItem[] items, int imin, int imax, int trisPerChunk, List<ChunkyTriMeshNode> nodes,
-            int[] inTris) {
+                           int[] inTris) {
         int inum = imax - imin;
 
         ChunkyTriMeshNode node = new ChunkyTriMeshNode();
@@ -184,9 +184,8 @@ public class ChunkyTriMesh {
     }
 
     private boolean checkOverlapRect(float[] amin, float[] amax, float[] bmin, float[] bmax) {
-        boolean overlap = true;
-        overlap = (amin[0] > bmax[0] || amax[0] < bmin[0]) ? false : overlap;
-        overlap = (amin[1] > bmax[1] || amax[1] < bmin[1]) ? false : overlap;
+        boolean overlap = !(amin[0] > bmax[0]) && !(amax[0] < bmin[0]);
+        overlap = !(amin[1] > bmax[1]) && !(amax[1] < bmin[1]) && overlap;
         return overlap;
     }
 
