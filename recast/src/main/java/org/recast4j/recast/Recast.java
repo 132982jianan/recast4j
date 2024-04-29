@@ -37,7 +37,7 @@ public class Recast {
     }
 
     public static int[] calcGridSize(float[] bmin, float[] bmax, float cs) {
-        return new int[] { (int) ((bmax[0] - bmin[0]) / cs + 0.5f), (int) ((bmax[2] - bmin[2]) / cs + 0.5f) };
+        return new int[]{(int) ((bmax[0] - bmin[0]) / cs + 0.5f), (int) ((bmax[2] - bmin[2]) / cs + 0.5f)};
     }
 
     public static int[] calcTileCount(float[] bmin, float[] bmax, float cs, int tileSizeX, int tileSizeZ) {
@@ -46,7 +46,7 @@ public class Recast {
         int gd = gwd[1];
         int tw = (gw + tileSizeX - 1) / tileSizeX;
         int td = (gd + tileSizeZ - 1) / tileSizeZ;
-        return new int[] { tw, td };
+        return new int[]{tw, td};
     }
 
     /// @par
@@ -56,8 +56,7 @@ public class Recast {
     /// See the #rcConfig documentation for more information on the configuration parameters.
     ///
     /// @see rcHeightfield, rcClearUnwalkableTriangles, rcRasterizeTriangles
-    public static int[] markWalkableTriangles(Telemetry ctx, float walkableSlopeAngle, float[] verts, int[] tris, int nt,
-            AreaModification areaMod) {
+    public static int[] markWalkableTriangles(Telemetry ctx, float walkableSlopeAngle, float[] verts, int[] tris, int nt, AreaModification areaMod) {
         int[] areas = new int[nt];
         float walkableThr = (float) Math.cos(walkableSlopeAngle / 180.0f * Math.PI);
         float norm[] = new float[3];
@@ -65,8 +64,9 @@ public class Recast {
             int tri = i * 3;
             calcTriNormal(verts, tris[tri], tris[tri + 1], tris[tri + 2], norm);
             // Check if the face is walkable.
-            if (norm[1] > walkableThr)
+            if (norm[1] > walkableThr) {
                 areas[i] = areaMod.apply(areas[i]);
+            }
         }
         return areas;
     }
@@ -87,8 +87,7 @@ public class Recast {
     /// See the #rcConfig documentation for more information on the configuration parameters.
     ///
     /// @see rcHeightfield, rcClearUnwalkableTriangles, rcRasterizeTriangles
-    public static void clearUnwalkableTriangles(Telemetry ctx, float walkableSlopeAngle, float[] verts, int nv,
-            int[] tris, int nt, int[] areas) {
+    public static void clearUnwalkableTriangles(Telemetry ctx, float walkableSlopeAngle, float[] verts, int nv, int[] tris, int nt, int[] areas) {
         float walkableThr = (float) Math.cos(walkableSlopeAngle / 180.0f * Math.PI);
 
         float norm[] = new float[3];
@@ -97,8 +96,9 @@ public class Recast {
             int tri = i * 3;
             calcTriNormal(verts, tris[tri], tris[tri + 1], tris[tri + 2], norm);
             // Check if the face is walkable.
-            if (norm[1] <= walkableThr)
+            if (norm[1] <= walkableThr) {
                 areas[i] = RC_NULL_AREA;
+            }
         }
     }
 

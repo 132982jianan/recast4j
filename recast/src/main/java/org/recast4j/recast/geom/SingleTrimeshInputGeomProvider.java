@@ -24,6 +24,7 @@ import java.util.List;
 import org.recast4j.recast.ConvexVolume;
 import org.recast4j.recast.RecastVectors;
 
+@Deprecated
 public class SingleTrimeshInputGeomProvider implements InputGeomProvider {
 
     private final float[] bmin;

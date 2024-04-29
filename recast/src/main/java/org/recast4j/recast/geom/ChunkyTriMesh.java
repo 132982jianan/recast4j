@@ -26,12 +26,14 @@ import java.util.List;
 public class ChunkyTriMesh {
 
     private static class BoundsItem {
+
         private final float[] bmin = new float[2];
         private final float[] bmax = new float[2];
         private int i;
     }
 
     public static class ChunkyTriMeshNode {
+
         private final float[] bmin = new float[2];
         private final float[] bmax = new float[2];
         private int i;
@@ -39,6 +41,7 @@ public class ChunkyTriMesh {
     }
 
     private class CompareItemX implements Comparator<BoundsItem> {
+
         @Override
         public int compare(BoundsItem a, BoundsItem b) {
             return Float.compare(a.bmin[0], b.bmin[0]);
@@ -46,6 +49,7 @@ public class ChunkyTriMesh {
     }
 
     private class CompareItemY implements Comparator<BoundsItem> {
+
         @Override
         public int compare(BoundsItem a, BoundsItem b) {
             return Float.compare(a.bmin[1], b.bmin[1]);
@@ -85,8 +89,7 @@ public class ChunkyTriMesh {
         return y > x ? 1 : 0;
     }
 
-    private void subdivide(BoundsItem[] items, int imin, int imax, int trisPerChunk, List<ChunkyTriMeshNode> nodes,
-                           int[] inTris) {
+    private void subdivide(BoundsItem[] items, int imin, int imax, int trisPerChunk, List<ChunkyTriMeshNode> nodes, int[] inTris) {
         int inum = imax - imin;
 
         ChunkyTriMeshNode node = new ChunkyTriMeshNode();
