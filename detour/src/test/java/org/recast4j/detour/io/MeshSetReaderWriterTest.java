@@ -104,10 +104,15 @@ public class MeshSetReaderWriterTest {
                 }
             }
         }
+
+        // 写进去
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         writer.write(os, mesh, ByteOrder.LITTLE_ENDIAN, true);
+
+        // 读取出来
         ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
         mesh = reader.read(is, 6);
+
         assertThat(mesh.getMaxTiles()).isEqualTo(128);
         assertThat(mesh.getParams().maxPolys).isEqualTo(0x8000);
         assertThat(mesh.getParams().tileWidth).isEqualTo(9.6f, offset(0.001f));
