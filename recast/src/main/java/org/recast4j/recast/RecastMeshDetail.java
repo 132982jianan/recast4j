@@ -43,6 +43,7 @@ public class RecastMeshDetail {
     static int EV_HULL = -2;
 
     private static class HeightPatch {
+
         int xmin;
         int ymin;
         int width;
@@ -226,8 +227,8 @@ public class RecastMeshDetail {
         for (i = 0, j = nvert - 1; i < nvert; j = i++) {
             int vi = i * 3;
             int vj = j * 3;
-            if (((verts[vi + 2] > p[2]) != (verts[vj + 2] > p[2])) && (p[0] < (verts[vj + 0] - verts[vi + 0])
-                    * (p[2] - verts[vi + 2]) / (verts[vj + 2] - verts[vi + 2]) + verts[vi + 0])) {
+            if (((verts[vi + 2] > p[2]) != (verts[vj + 2] > p[2])) && (p[0]
+                    < (verts[vj + 0] - verts[vi + 0]) * (p[2] - verts[vi + 2]) / (verts[vj + 2] - verts[vi + 2]) + verts[vi + 0])) {
                 c = !c;
             }
             dmin = Math.min(dmin, distancePtSeg2d(p, 0, verts, vj, vi));
@@ -235,8 +236,7 @@ public class RecastMeshDetail {
         return c ? -dmin : dmin;
     }
 
-    private static int getHeight(float fx, float fy, float fz, float cs, float ics, float ch, int radius,
-            HeightPatch hp) {
+    private static int getHeight(float fx, float fy, float fz, float cs, float ics, float ch, int radius, HeightPatch hp) {
         int ix = (int) Math.floor(fx * ics + 0.01f);
         int iz = (int) Math.floor(fz * ics + 0.01f);
         ix = RecastCommon.clamp(ix - hp.xmin, 0, hp.width - 1);
@@ -614,8 +614,8 @@ public class RecastMeshDetail {
         return (((i * 0xd8163841) & 0xffff) / 65535.0f * 2.0f) - 1.0f;
     }
 
-    static int buildPolyDetail(Telemetry ctx, float[] in, int nin, float sampleDist, float sampleMaxError,
-            int heightSearchRadius, CompactHeightfield chf, HeightPatch hp, float[] verts, List<Integer> tris) {
+    static int buildPolyDetail(Telemetry ctx, float[] in, int nin, float sampleDist, float sampleMaxError, int heightSearchRadius,
+            CompactHeightfield chf, HeightPatch hp, float[] verts, List<Integer> tris) {
 
         List<Integer> samples = new ArrayList<>(512);
 
@@ -681,15 +681,14 @@ public class RecastMeshDetail {
                     edge[pos + 0] = in[vj + 0] + dx * u;
                     edge[pos + 1] = in[vj + 1] + dy * u;
                     edge[pos + 2] = in[vj + 2] + dz * u;
-                    edge[pos + 1] = getHeight(edge[pos + 0], edge[pos + 1], edge[pos + 2], cs, ics, chf.ch,
-                            heightSearchRadius, hp) * chf.ch;
+                    edge[pos + 1] = getHeight(edge[pos + 0], edge[pos + 1], edge[pos + 2], cs, ics, chf.ch, heightSearchRadius, hp) * chf.ch;
                 }
                 // Simplify samples.
                 int[] idx = new int[MAX_VERTS_PER_EDGE];
                 idx[0] = 0;
                 idx[1] = nn;
                 int nidx = 2;
-                for (int k = 0; k < nidx - 1;) {
+                for (int k = 0; k < nidx - 1; ) {
                     int a = idx[k];
                     int b = idx[k + 1];
                     int va = a * 3;
@@ -840,8 +839,7 @@ public class RecastMeshDetail {
             List<Integer> subList = tris.subList(0, MAX_TRIS * 4);
             tris.clear();
             tris.addAll(subList);
-            throw new RuntimeException(
-                    "rcBuildPolyMeshDetail: Shrinking triangle count from " + ntris + " to max " + MAX_TRIS);
+            throw new RuntimeException("rcBuildPolyMeshDetail: Shrinking triangle count from " + ntris + " to max " + MAX_TRIS);
         }
         setTriFlags(tris, nhull, hull);
         return nverts;
@@ -865,23 +863,25 @@ public class RecastMeshDetail {
 
     static boolean onHull(int a, int b, int nhull, int[] hull) {
         // All internal sampled points come after the hull so we can early out for those.
-        if (a >= nhull || b >= nhull)
+        if (a >= nhull || b >= nhull) {
             return false;
+        }
 
         for (int j = nhull - 1, i = 0; i < nhull; j = i++) {
-            if (a == hull[j] && b == hull[i])
+            if (a == hull[j] && b == hull[i]) {
                 return true;
+            }
         }
 
         return false;
     }
 
-    static void seedArrayWithPolyCenter(Telemetry ctx, CompactHeightfield chf, int[] meshpoly, int poly, int npoly,
-            int[] verts, int bs, HeightPatch hp, List<Integer> array) {
+    static void seedArrayWithPolyCenter(Telemetry ctx, CompactHeightfield chf, int[] meshpoly, int poly, int npoly, int[] verts, int bs,
+            HeightPatch hp, List<Integer> array) {
         // Note: Reads to the compact heightfield are offset by border size (bs)
         // since border size offset is already removed from the polymesh vertices.
 
-        int offset[] = { 0, 0, -1, -1, 0, -1, 1, -1, 1, 0, 1, 1, 0, 1, -1, 1, -1, 0, };
+        int offset[] = {0, 0, -1, -1, 0, -1, 1, -1, 1, 0, 1, 1, 0, 1, -1, 1, -1, 0,};
 
         // Find cell closest to a poly vertex
         int startCellX = 0, startCellY = 0, startSpanIndex = -1;
@@ -922,7 +922,7 @@ public class RecastMeshDetail {
         array.add(startCellX);
         array.add(startCellY);
         array.add(startSpanIndex);
-        int dirs[] = { 0, 1, 2, 3 };
+        int dirs[] = {0, 1, 2, 3};
         Arrays.fill(hp.data, 0, hp.width * hp.height, 0);
         // DFS to move to the center. Note that we need a DFS here and can not just move
         // directly towards the center without recording intermediate nodes, even though the polygons
@@ -1008,8 +1008,8 @@ public class RecastMeshDetail {
         queue.add(v3);
     }
 
-    static void getHeightData(Telemetry ctx, CompactHeightfield chf, int[] meshpolys, int poly, int npoly, int[] verts,
-            int bs, HeightPatch hp, int region) {
+    static void getHeightData(Telemetry ctx, CompactHeightfield chf, int[] meshpolys, int poly, int npoly, int[] verts, int bs, HeightPatch hp,
+            int region) {
         // Note: Reads to the compact heightfield are offset by border size (bs)
         // since border size offset is already removed from the polymesh vertices.
 
@@ -1115,8 +1115,7 @@ public class RecastMeshDetail {
     /// See the #rcConfig documentation for more information on the configuration parameters.
     ///
     /// @see rcAllocPolyMeshDetail, rcPolyMesh, rcCompactHeightfield, rcPolyMeshDetail, rcConfig
-    public static PolyMeshDetail buildPolyMeshDetail(Telemetry ctx, PolyMesh mesh, CompactHeightfield chf,
-            float sampleDist, float sampleMaxError) {
+    public static PolyMeshDetail buildPolyMeshDetail(Telemetry ctx, PolyMesh mesh, CompactHeightfield chf, float sampleDist, float sampleMaxError) {
 
         ctx.startTimer("POLYMESHDETAIL");
         if (mesh.nverts == 0 || mesh.npolys == 0) {
@@ -1207,14 +1206,13 @@ public class RecastMeshDetail {
             getHeightData(ctx, chf, mesh.polys, p, npoly, mesh.verts, borderSize, hp, mesh.regs[i]);
 
             // Build detail mesh.
-            int nverts = buildPolyDetail(ctx, poly, npoly, sampleDist, sampleMaxError, heightSearchRadius, chf, hp,
-                    verts, tris);
+            int nverts = buildPolyDetail(ctx, poly, npoly, sampleDist, sampleMaxError, heightSearchRadius, chf, hp, verts, tris);
 
             // Move detail verts to world space.
             for (int j = 0; j < nverts; ++j) {
                 verts[j * 3 + 0] += orig[0];
                 verts[j * 3 + 1] += orig[1] + chf.ch; // Is this offset necessary? See
-                                                      // https://groups.google.com/d/msg/recastnavigation/UQFN6BGCcV0/-1Ny4koOBpkJ
+                // https://groups.google.com/d/msg/recastnavigation/UQFN6BGCcV0/-1Ny4koOBpkJ
                 verts[j * 3 + 2] += orig[2];
             }
             // Offset poly too, will be used to flag checking.
