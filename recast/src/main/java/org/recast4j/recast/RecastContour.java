@@ -34,12 +34,14 @@ import java.util.List;
 public class RecastContour {
 
     private static class ContourRegion {
+
         public Contour outline;
         public ContourHole[] holes;
         public int nholes;
     }
 
     private static class ContourHole {
+
         public int leftmost;
         public int minx;
         public int minz;
@@ -47,11 +49,13 @@ public class RecastContour {
     }
 
     private static class PotentialDiagonal {
+
         public int dist;
         public int vert;
     }
 
     private static class CornerHeight {
+
         public final int height;
         public final boolean borderVertex;
 
@@ -68,7 +72,7 @@ public class RecastContour {
         int ch = s.y;
         int dirp = (dir + 1) & 0x3;
 
-        int regs[] = { 0, 0, 0, 0 };
+        int regs[] = {0, 0, 0, 0};
 
         // Combine region and area codes in order to prevent
         // border vertices which are in between two areas to be removed.
@@ -132,8 +136,9 @@ public class RecastContour {
     private static void walkContour(int x, int y, int i, CompactHeightfield chf, int[] flags, List<Integer> points) {
         // Choose the first non-connected edge
         int dir = 0;
-        while ((flags[i] & (1 << dir)) == 0)
+        while ((flags[i] & (1 << dir)) == 0) {
             dir++;
+        }
 
         int startDir = dir;
         int starti = i;
@@ -151,16 +156,16 @@ public class RecastContour {
                 int py = cornerHeight.height;
                 int pz = y;
                 switch (dir) {
-                case 0:
-                    pz++;
-                    break;
-                case 1:
-                    px++;
-                    pz++;
-                    break;
-                case 2:
-                    px++;
-                    break;
+                    case 0:
+                        pz++;
+                        break;
+                    case 1:
+                        px++;
+                        pz++;
+                        break;
+                    case 2:
+                        px++;
+                        break;
                 }
                 int r = 0;
                 CompactSpan s = chf.spans[i];
@@ -169,13 +174,16 @@ public class RecastContour {
                     int ay = y + RecastCommon.GetDirOffsetY(dir);
                     int ai = chf.cells[ax + ay * chf.width].index + RecastCommon.GetCon(s, dir);
                     r = chf.spans[ai].reg;
-                    if (area != chf.areas[ai])
+                    if (area != chf.areas[ai]) {
                         isAreaBorder = true;
+                    }
                 }
-                if (isBorderVertex)
+                if (isBorderVertex) {
                     r |= RC_BORDER_VERTEX;
-                if (isAreaBorder)
+                }
+                if (isAreaBorder) {
                     r |= RC_AREA_BORDER;
+                }
                 points.add(px);
                 points.add(py);
                 points.add(pz);
@@ -215,12 +223,14 @@ public class RecastContour {
         float dz = z - pz;
         float d = pqx * pqx + pqz * pqz;
         float t = pqx * dx + pqz * dz;
-        if (d > 0)
+        if (d > 0) {
             t /= d;
-        if (t < 0)
+        }
+        if (t < 0) {
             t = 0;
-        else if (t > 1)
+        } else if (t > 1) {
             t = 1;
+        }
 
         dx = px + t * pqx - x;
         dz = pz + t * pqz - z;
@@ -228,8 +238,7 @@ public class RecastContour {
         return dx * dx + dz * dz;
     }
 
-    private static void simplifyContour(List<Integer> points, List<Integer> simplified, float maxError, int maxEdgeLen,
-            int buildFlags) {
+    private static void simplifyContour(List<Integer> points, List<Integer> simplified, float maxError, int maxEdgeLen, int buildFlags) {
         // Add initial points.
         boolean hasConnections = false;
         for (int i = 0; i < points.size(); i += 4) {
@@ -244,10 +253,8 @@ public class RecastContour {
             // Add a new point to every location where the region changes.
             for (int i = 0, ni = points.size() / 4; i < ni; ++i) {
                 int ii = (i + 1) % ni;
-                boolean differentRegs = (points.get(i * 4 + 3) & RC_CONTOUR_REG_MASK) != (points.get(ii * 4 + 3)
-                        & RC_CONTOUR_REG_MASK);
-                boolean areaBorders = (points.get(i * 4 + 3) & RC_AREA_BORDER) != (points.get(ii * 4 + 3)
-                        & RC_AREA_BORDER);
+                boolean differentRegs = (points.get(i * 4 + 3) & RC_CONTOUR_REG_MASK) != (points.get(ii * 4 + 3) & RC_CONTOUR_REG_MASK);
+                boolean areaBorders = (points.get(i * 4 + 3) & RC_AREA_BORDER) != (points.get(ii * 4 + 3) & RC_AREA_BORDER);
                 if (differentRegs || areaBorders) {
                     simplified.add(points.get(i * 4 + 0));
                     simplified.add(points.get(i * 4 + 1));
@@ -299,7 +306,7 @@ public class RecastContour {
         // Add points until all raw points are within
         // error tolerance to the simplified shape.
         int pn = points.size() / 4;
-        for (int i = 0; i < simplified.size() / 4;) {
+        for (int i = 0; i < simplified.size() / 4; ) {
             int ii = (i + 1) % (simplified.size() / 4);
 
             int ax = simplified.get(i * 4 + 0);
@@ -358,7 +365,7 @@ public class RecastContour {
         }
         // Split too long edges.
         if (maxEdgeLen > 0 && (buildFlags & (RC_CONTOUR_TESS_WALL_EDGES | RC_CONTOUR_TESS_AREA_EDGES)) != 0) {
-            for (int i = 0; i < simplified.size() / 4;) {
+            for (int i = 0; i < simplified.size() / 4; ) {
                 int ii = (i + 1) % (simplified.size() / 4);
 
                 int ax = simplified.get(i * 4 + 0);
@@ -376,12 +383,13 @@ public class RecastContour {
                 // Tessellate only outer edges or edges between areas.
                 boolean tess = false;
                 // Wall edges.
-                if ((buildFlags & RC_CONTOUR_TESS_WALL_EDGES) != 0
-                        && (points.get(ci * 4 + 3) & RC_CONTOUR_REG_MASK) == 0)
+                if ((buildFlags & RC_CONTOUR_TESS_WALL_EDGES) != 0 && (points.get(ci * 4 + 3) & RC_CONTOUR_REG_MASK) == 0) {
                     tess = true;
+                }
                 // Edges between areas.
-                if ((buildFlags & RC_CONTOUR_TESS_AREA_EDGES) != 0 && (points.get(ci * 4 + 3) & RC_AREA_BORDER) != 0)
+                if ((buildFlags & RC_CONTOUR_TESS_AREA_EDGES) != 0 && (points.get(ci * 4 + 3) & RC_AREA_BORDER) != 0) {
                     tess = true;
+                }
 
                 if (tess) {
                     int dx = bx - ax;
@@ -392,10 +400,11 @@ public class RecastContour {
                         // segments are traversed.
                         int n = bi < ai ? (bi + pn - ai) : (bi - ai);
                         if (n > 1) {
-                            if (bx > ax || (bx == ax && bz > az))
+                            if (bx > ax || (bx == ax && bz > az)) {
                                 maxi = (ai + n / 2) % pn;
-                            else
+                            } else {
                                 maxi = (ai + (n + 1) / 2) % pn;
+                            }
                         }
                     }
                 }
@@ -418,8 +427,8 @@ public class RecastContour {
             // and the neighbour region is take from the next raw point.
             int ai = (simplified.get(i * 4 + 3) + 1) % pn;
             int bi = simplified.get(i * 4 + 3);
-            simplified.set(i * 4 + 3, (points.get(ai * 4 + 3) & (RC_CONTOUR_REG_MASK | RC_AREA_BORDER))
-                    | (points.get(bi * 4 + 3) & RC_BORDER_VERTEX));
+            simplified
+                    .set(i * 4 + 3, (points.get(ai * 4 + 3) & (RC_CONTOUR_REG_MASK | RC_AREA_BORDER)) | (points.get(bi * 4 + 3) & RC_BORDER_VERTEX));
         }
 
     }
@@ -434,8 +443,7 @@ public class RecastContour {
         return (area + 1) / 2;
     }
 
-    private static boolean intersectSegCountour(int d0, int d1, int i, int n, int[] verts, int[] d0verts,
-            int[] d1verts) {
+    private static boolean intersectSegCountour(int d0, int d1, int i, int n, int[] verts, int[] d0verts, int[] d1verts) {
         // For each edge (k,k+1) of P
         int[] pverts = new int[4 * 4];
         for (int g = 0; g < 4; g++) {
@@ -447,8 +455,9 @@ public class RecastContour {
         for (int k = 0; k < n; k++) {
             int k1 = RecastMesh.next(k, n);
             // Skip edges incident to i.
-            if (i == k || i == k1)
+            if (i == k || i == k1) {
                 continue;
+            }
             int p0 = k * 4;
             int p1 = k1 * 4;
             for (int g = 0; g < 4; g++) {
@@ -457,12 +466,14 @@ public class RecastContour {
             }
             p0 = 8;
             p1 = 12;
-            if (RecastMesh.vequal(pverts, d0, p0) || RecastMesh.vequal(pverts, d1, p0)
-                    || RecastMesh.vequal(pverts, d0, p1) || RecastMesh.vequal(pverts, d1, p1))
+            if (RecastMesh.vequal(pverts, d0, p0) || RecastMesh.vequal(pverts, d1, p0) || RecastMesh.vequal(pverts, d0, p1) || RecastMesh
+                    .vequal(pverts, d1, p1)) {
                 continue;
+            }
 
-            if (RecastMesh.intersect(pverts, d0, d1, p0, p1))
+            if (RecastMesh.intersect(pverts, d0, d1, p0, p1)) {
                 return true;
+            }
         }
         return false;
     }
@@ -483,8 +494,9 @@ public class RecastContour {
         pin1 = 8;
         pj = 12;
         // If P[i] is a convex vertex [ i+1 left or on (i-1,i) ].
-        if (RecastMesh.leftOn(pverts, pin1, pi, pi1))
+        if (RecastMesh.leftOn(pverts, pin1, pi, pi1)) {
             return RecastMesh.left(pverts, pi, pj, pin1) && RecastMesh.left(pverts, pj, pi, pi1);
+        }
         // Assume (i-1,i,i+1) not collinear.
         // else P[i] is reflex.
         return !(RecastMesh.leftOn(pverts, pi, pj, pi1) && RecastMesh.leftOn(pverts, pj, pi, pin1));
@@ -498,8 +510,7 @@ public class RecastContour {
             int ni = RecastMesh.next(i, npts);
 
             // if (vequal(&simplified[i*4], &simplified[ni*4]))
-            if (simplified.get(i * 4) == simplified.get(ni * 4)
-                    && simplified.get(i * 4 + 2) == simplified.get(ni * 4 + 2)) {
+            if (simplified.get(i * 4) == simplified.get(ni * 4) && simplified.get(i * 4 + 2) == simplified.get(ni * 4 + 2)) {
                 // Degenerate segment, remove.
                 simplified.remove(i * 4);
                 simplified.remove(i * 4);
@@ -560,7 +571,7 @@ public class RecastContour {
                 leftmost = i;
             }
         }
-        return new int[] { minx, minz, leftmost };
+        return new int[]{minx, minz, leftmost};
     }
 
     private static class CompareHoles implements Comparator<ContourHole> {
@@ -597,8 +608,9 @@ public class RecastContour {
         Arrays.sort(region.holes, new CompareHoles());
 
         int maxVerts = region.outline.nverts;
-        for (int i = 0; i < region.nholes; i++)
+        for (int i = 0; i < region.nholes; i++) {
             maxVerts += region.holes[i].contour.nverts;
+        }
 
         PotentialDiagonal[] diags = new PotentialDiagonal[maxVerts];
         for (int pd = 0; pd < maxVerts; pd++) {
@@ -639,19 +651,20 @@ public class RecastContour {
                 index = -1;
                 for (int j = 0; j < ndiags; j++) {
                     int pt = diags[j].vert * 4;
-                    boolean intersect = intersectSegCountour(pt, corner, diags[j].vert, outline.nverts, outline.verts,
-                            outline.verts, hole.verts);
-                    for (int k = i; k < region.nholes && !intersect; k++)
-                        intersect |= intersectSegCountour(pt, corner, -1, region.holes[k].contour.nverts,
-                                region.holes[k].contour.verts, outline.verts, hole.verts);
+                    boolean intersect = intersectSegCountour(pt, corner, diags[j].vert, outline.nverts, outline.verts, outline.verts, hole.verts);
+                    for (int k = i; k < region.nholes && !intersect; k++) {
+                        intersect |= intersectSegCountour(pt, corner, -1, region.holes[k].contour.nverts, region.holes[k].contour.verts,
+                                outline.verts, hole.verts);
+                    }
                     if (!intersect) {
                         index = diags[j].vert;
                         break;
                     }
                 }
                 // If found non-intersecting diagonal, stop looking.
-                if (index != -1)
+                if (index != -1) {
                     break;
+                }
                 // All the potential diagonals for the current vertex were intersecting, try next vertex.
                 bestVertex = (bestVertex + 1) % hole.nverts;
             }
@@ -677,8 +690,7 @@ public class RecastContour {
     /// See the #rcConfig documentation for more information on the configuration parameters.
     ///
     /// @see rcAllocContourSet, rcCompactHeightfield, rcContourSet, rcConfig
-    public static ContourSet buildContours(Telemetry ctx, CompactHeightfield chf, float maxError, int maxEdgeLen,
-            int buildFlags) {
+    public static ContourSet buildContours(Telemetry ctx, CompactHeightfield chf, float maxError, int maxEdgeLen, int buildFlags) {
 
         int w = chf.width;
         int h = chf.height;
@@ -726,8 +738,9 @@ public class RecastContour {
                             int ai = chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, dir);
                             r = chf.spans[ai].reg;
                         }
-                        if (r == chf.spans[i].reg)
+                        if (r == chf.spans[i].reg) {
                             res |= (1 << dir);
+                        }
                     }
                     flags[i] = res ^ 0xf; // Inverse, mark non connected edges.
                 }
@@ -748,8 +761,9 @@ public class RecastContour {
                         continue;
                     }
                     int reg = chf.spans[i].reg;
-                    if (reg == 0 || (reg & RC_BORDER_REG) != 0)
+                    if (reg == 0 || (reg & RC_BORDER_REG) != 0) {
                         continue;
+                    }
                     int area = chf.areas[i];
 
                     verts.clear();
@@ -814,8 +828,9 @@ public class RecastContour {
                 Contour cont = cset.conts.get(i);
                 // If the contour is wound backwards, it is a hole.
                 winding[i] = calcAreaOfPolygon2D(cont.verts, cont.nverts) < 0 ? -1 : 1;
-                if (winding[i] < 0)
+                if (winding[i] < 0) {
                     nholes++;
+                }
             }
 
             if (nholes > 0) {
@@ -832,8 +847,7 @@ public class RecastContour {
                     // Positively would contours are outlines, negative holes.
                     if (winding[i] > 0) {
                         if (regions[cont.reg].outline != null) {
-                            throw new RuntimeException(
-                                    "rcBuildContours: Multiple outlines for region " + cont.reg + ".");
+                            throw new RuntimeException("rcBuildContours: Multiple outlines for region " + cont.reg + ".");
                         }
                         regions[cont.reg].outline = cont;
                     } else {
@@ -852,15 +866,17 @@ public class RecastContour {
                 for (int i = 0; i < cset.conts.size(); ++i) {
                     Contour cont = cset.conts.get(i);
                     ContourRegion reg = regions[cont.reg];
-                    if (winding[i] < 0)
+                    if (winding[i] < 0) {
                         reg.holes[reg.nholes++].contour = cont;
+                    }
                 }
 
                 // Finally merge each regions holes into the outline.
                 for (int i = 0; i < nregions; i++) {
                     ContourRegion reg = regions[i];
-                    if (reg.nholes == 0)
+                    if (reg.nholes == 0) {
                         continue;
+                    }
 
                     if (reg.outline != null) {
                         mergeRegionHoles(ctx, reg);
@@ -868,8 +884,8 @@ public class RecastContour {
                         // The region does not have an outline.
                         // This can happen if the contour becaomes selfoverlapping because of
                         // too aggressive simplification settings.
-                        throw new RuntimeException("rcBuildContours: Bad outline for region " + i
-                                + ", contour simplification is likely too aggressive.");
+                        throw new RuntimeException(
+                                "rcBuildContours: Bad outline for region " + i + ", contour simplification is likely too aggressive.");
                     }
                 }
             }

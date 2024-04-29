@@ -52,8 +52,9 @@ public class RecastFilter {
                     // If current span is not walkable, but there is walkable
                     // span just below it, mark the span above it walkable too.
                     if (!walkable && previousWasWalkable) {
-                        if (Math.abs(span.smax - previousSpan.smax) <= walkableClimb)
+                        if (Math.abs(span.smax - previousSpan.smax) <= walkableClimb) {
                             span.area = previousArea;
+                        }
                     }
                     // Copy walkable flag so that it cannot propagate
                     // past multiple non-walkable objects.
@@ -87,8 +88,9 @@ public class RecastFilter {
             for (int x = 0; x < xSize; ++x) {
                 for (Span span = heightfield.spans[x + z * xSize]; span != null; span = span.next) {
                     // Skip non walkable spans.
-                    if (span.area == RC_NULL_AREA)
+                    if (span.area == RC_NULL_AREA) {
                         continue;
+                    }
 
                     int bot = (span.smax);
                     int top = span.next != null ? span.next.smin : SPAN_MAX_HEIGHT;
@@ -129,10 +131,12 @@ public class RecastFilter {
 
                                 // Find min/max accessible neighbour height.
                                 if (Math.abs(accessibleNeighbourHeight) <= walkableClimb) {
-                                    if (neighborBot < accessibleNeighborMinHeight)
+                                    if (neighborBot < accessibleNeighborMinHeight) {
                                         accessibleNeighborMinHeight = neighborBot;
-                                    if (neighborBot > accessibleNeighborMaxHeight)
+                                    }
+                                    if (neighborBot > accessibleNeighborMaxHeight) {
                                         accessibleNeighborMaxHeight = neighborBot;
+                                    }
                                 } else if (accessibleNeighbourHeight < -walkableClimb) {
                                     break;
                                 }
@@ -143,8 +147,9 @@ public class RecastFilter {
 
                     // The current span is close to a ledge if the drop to any
                     // neighbour span is less than the walkableClimb.
-                    if (minNeighborHeight < -walkableClimb)
+                    if (minNeighborHeight < -walkableClimb) {
                         span.area = RC_NULL_AREA;
+                    }
 
                     // If the difference between all neighbours is too large,
                     // we are at steep slope, mark the span as ledge.
@@ -177,8 +182,9 @@ public class RecastFilter {
                 for (Span span = heightfield.spans[x + z * xSize]; span != null; span = span.next) {
                     int bot = (span.smax);
                     int top = span.next != null ? span.next.smin : SPAN_MAX_HEIGHT;
-                    if ((top - bot) < walkableHeight)
+                    if ((top - bot) < walkableHeight) {
                         span.area = RC_NULL_AREA;
+                    }
                 }
             }
         }

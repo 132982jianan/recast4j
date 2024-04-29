@@ -64,12 +64,14 @@ public class RecastConstants {
     public static int RC_MESH_NULL_IDX = 0xffff;
 
     public static int RC_CONTOUR_TESS_WALL_EDGES = 0x01; /// < Tessellate solid (impassable) edges during contour
-                                                         /// simplification.
+    /// simplification.
     public static int RC_CONTOUR_TESS_AREA_EDGES = 0x02; /// < Tessellate edges between areas during contour
-                                                         /// simplification.
+    /// simplification.
 
     public enum PartitionType {
-        WATERSHED, MONOTONE, LAYERS
+        WATERSHED,
+        MONOTONE,
+        LAYERS
     }
 
     public static final int RC_LOG_WARNING = 1;
