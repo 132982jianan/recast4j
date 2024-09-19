@@ -1,0 +1,1 @@
+1)org.recast4j.detour.NavMeshQuery#findStraightPath
