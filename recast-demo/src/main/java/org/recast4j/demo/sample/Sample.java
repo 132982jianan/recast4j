@@ -27,6 +27,9 @@ import org.recast4j.detour.NavMesh;
 import org.recast4j.detour.NavMeshQuery;
 import org.recast4j.recast.RecastBuilder.RecastBuilderResult;
 
+/**
+ * 这个类，我可以认为是：对标于Scene
+ */
 public class Sample {
 
     private DemoInputGeomProvider inputGeom;
@@ -36,13 +39,27 @@ public class Sample {
     private List<RecastBuilderResult> recastResults;
     private boolean changed;
 
-    public Sample(DemoInputGeomProvider inputGeom, List<RecastBuilderResult> recastResults, NavMesh navMesh,
-            SettingsUI settingsUI, RecastDebugDraw debugDraw) {
+    /**
+     * @param inputGeom
+     * @param recastResults
+     * @param navMesh       这个应该是被处理后的obj文件,转化为三角形信息了
+     * @param settingsUI
+     * @param debugDraw
+     */
+    public Sample(DemoInputGeomProvider inputGeom, List<RecastBuilderResult> recastResults, NavMesh navMesh, SettingsUI settingsUI,
+            RecastDebugDraw debugDraw) {
+        // 这个变量也可能是空???
         this.inputGeom = inputGeom;
+
         this.recastResults = recastResults;
+
+        // 这个变量也可能是空???
         this.navMesh = navMesh;
+
         this.settingsUI = settingsUI;
+
         setQuery(navMesh);
+
         changed = true;
     }
 
@@ -82,6 +99,8 @@ public class Sample {
         inputGeom = geom;
         this.recastResults = recastResults;
         this.navMesh = navMesh;
+
+        // ???
         setQuery(navMesh);
         changed = true;
     }

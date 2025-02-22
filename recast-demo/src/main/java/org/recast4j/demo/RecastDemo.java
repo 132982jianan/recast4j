@@ -92,6 +92,7 @@ public class RecastDemo {
     private final NavMeshRenderer renderer = new NavMeshRenderer(dd);
     private boolean building = false;
 
+    // 这2个应该不用，因为都是不支持动态阻挡的
     private final SoloNavMeshBuilder soloNavMeshBuilder = new SoloNavMeshBuilder();
     private final TileNavMeshBuilder tileNavMeshBuilder = new TileNavMeshBuilder();
 
@@ -113,8 +114,8 @@ public class RecastDemo {
     private final float[] origCameraEulers = new float[2];
     private final float[] origCameraPos = new float[3];
 
-    private final float cameraEulers[] = { 45, -45 };
-    private final float cameraPos[] = { 0, 0, 0 };
+    private final float cameraEulers[] = {45, -45};
+    private final float cameraPos[] = {0, 0, 0};
 
     private final float[] rayStart = new float[3];
     private final float[] rayEnd = new float[3];
@@ -125,6 +126,9 @@ public class RecastDemo {
     private SettingsUI settingsUI;
     private long prevFrameTime;
 
+    /**
+     * 这个就相当于入口文件
+     */
     public void start() {
         long window = initializeOpenGL();
 
@@ -134,13 +138,15 @@ public class RecastDemo {
         Mouse mouse = createMouse(window);
 
         settingsUI = new SettingsUI();
-        toolsUI = new ToolsUI(new TestNavmeshTool(), new OffMeshConnectionTool(), new ConvexVolumeTool(), new CrowdTool(),
-                new JumpLinkBuilderTool(), new DynamicUpdateTool());
+        toolsUI = new ToolsUI(new TestNavmeshTool(), new OffMeshConnectionTool(), new ConvexVolumeTool(), new CrowdTool(), new JumpLinkBuilderTool(),
+                new DynamicUpdateTool());
 
         nuklearUI = new NuklearUI(window, mouse, settingsUI, toolsUI);
 
+        // 把默认的obj文件显示到视图中
         DemoInputGeomProvider geom = loadInputMesh(getClass().getClassLoader().getResourceAsStream("nav_test.obj"));
         sample = new Sample(geom, Collections.emptyList(), null, settingsUI, dd);
+
         float timeAcc = 0;
         while (!glfwWindowShouldClose(window)) {
 
@@ -153,12 +159,10 @@ public class RecastDemo {
                 float[] bmax = sample.getInputGeom().getMeshBoundsMax();
                 int[] voxels = Recast.calcGridSize(bmin, bmax, settingsUI.getCellSize());
                 settingsUI.setVoxels(voxels);
-                settingsUI.setTiles(
-                        tileNavMeshBuilder.getTiles(sample.getInputGeom(), settingsUI.getCellSize(), settingsUI.getTileSize()));
-                settingsUI.setMaxTiles(tileNavMeshBuilder.getMaxTiles(sample.getInputGeom(), settingsUI.getCellSize(),
-                        settingsUI.getTileSize()));
-                settingsUI.setMaxPolys(tileNavMeshBuilder.getMaxPolysPerTile(sample.getInputGeom(), settingsUI.getCellSize(),
-                        settingsUI.getTileSize()));
+                settingsUI.setTiles(tileNavMeshBuilder.getTiles(sample.getInputGeom(), settingsUI.getCellSize(), settingsUI.getTileSize()));
+                settingsUI.setMaxTiles(tileNavMeshBuilder.getMaxTiles(sample.getInputGeom(), settingsUI.getCellSize(), settingsUI.getTileSize()));
+                settingsUI.setMaxPolys(
+                        tileNavMeshBuilder.getMaxPolysPerTile(sample.getInputGeom(), settingsUI.getCellSize(), settingsUI.getTileSize()));
             }
 
             nuklearUI.inputBegin();
@@ -184,7 +188,7 @@ public class RecastDemo {
 
             // Set the viewport.
             // glViewport(0, 0, width, height);
-            int[] viewport = new int[] { 0, 0, width, height };
+            int[] viewport = new int[]{0, 0, width, height};
             // glGetIntegerv(GL_VIEWPORT, viewport);
 
             // Clear the screen
@@ -199,8 +203,7 @@ public class RecastDemo {
                     PointerBuffer aFilterPatterns = stack.mallocPointer(2);
                     aFilterPatterns.put(stack.UTF8("*.obj"));
                     aFilterPatterns.flip();
-                    String filename = TinyFileDialogs.tinyfd_openFileDialog("Open Mesh File", "", aFilterPatterns,
-                            "Mesh File (*.obj)", false);
+                    String filename = TinyFileDialogs.tinyfd_openFileDialog("Open Mesh File", "", aFilterPatterns, "Mesh File (*.obj)", false);
                     if (filename != null) {
                         try (InputStream stream = new FileInputStream(filename)) {
                             sample.update(loadInputMesh(stream), null, null);
@@ -217,12 +220,12 @@ public class RecastDemo {
                     aFilterPatterns.put(stack.UTF8("*.bytes"));
                     aFilterPatterns.put(stack.UTF8("*.navmesh"));
                     aFilterPatterns.flip();
-                    String filename = TinyFileDialogs.tinyfd_openFileDialog("Open Nav Mesh File", "", aFilterPatterns,
-                            "Nav Mesh File", false);
+                    String filename = TinyFileDialogs.tinyfd_openFileDialog("Open Nav Mesh File", "", aFilterPatterns, "Nav Mesh File", false);
                     if (filename != null) {
                         File file = new File(filename);
                         if (file.exists()) {
                             try {
+                                // ？？？
                                 loadNavMesh(file, filename);
                                 geom = null;
                             } catch (Exception e) {
@@ -252,19 +255,20 @@ public class RecastDemo {
 
                     Tupple2<List<RecastBuilderResult>, NavMesh> buildResult;
                     if (settingsUI.isTiled()) {
-                        buildResult = tileNavMeshBuilder.build(sample.getInputGeom(), settingsUI.getPartitioning(), m_cellSize,
-                                m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize,
-                                m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
-                                m_detailSampleMaxError, settingsUI.isFilterLowHangingObstacles(), settingsUI.isFilterLedgeSpans(),
-                                settingsUI.isFilterWalkableLowHeightSpans(), m_tileSize);
+                        buildResult = tileNavMeshBuilder
+                                .build(sample.getInputGeom(), settingsUI.getPartitioning(), m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius,
+                                        m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError,
+                                        m_vertsPerPoly, m_detailSampleDist, m_detailSampleMaxError, settingsUI.isFilterLowHangingObstacles(),
+                                        settingsUI.isFilterLedgeSpans(), settingsUI.isFilterWalkableLowHeightSpans(), m_tileSize);
 
                     } else {
-                        buildResult = soloNavMeshBuilder.build(sample.getInputGeom(), settingsUI.getPartitioning(), m_cellSize,
-                                m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize,
-                                m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
-                                m_detailSampleMaxError, settingsUI.isFilterLowHangingObstacles(), settingsUI.isFilterLedgeSpans(),
-                                settingsUI.isFilterWalkableLowHeightSpans());
+                        buildResult = soloNavMeshBuilder
+                                .build(sample.getInputGeom(), settingsUI.getPartitioning(), m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius,
+                                        m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError,
+                                        m_vertsPerPoly, m_detailSampleDist, m_detailSampleMaxError, settingsUI.isFilterLowHangingObstacles(),
+                                        settingsUI.isFilterLedgeSpans(), settingsUI.isFilterWalkableLowHeightSpans());
                     }
+
                     sample.update(sample.getInputGeom(), buildResult.first, buildResult.second);
                     sample.setChanged(false);
                     settingsUI.setBuildTime((System.nanoTime() - t) / 1_000_000);
@@ -276,10 +280,8 @@ public class RecastDemo {
 
             if (!mouseOverMenu) {
                 // 将鼠标点击的屏幕坐标转成世界坐标
-                GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 0.0f, modelviewMatrix, projectionMatrix, viewport,
-                        rayStart);
-                GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 1.0f, modelviewMatrix, projectionMatrix, viewport,
-                        rayEnd);
+                GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 0.0f, modelviewMatrix, projectionMatrix, viewport, rayStart);
+                GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 1.0f, modelviewMatrix, projectionMatrix, viewport, rayEnd);
 
                 // Hit test mesh.
                 DemoInputGeomProvider inputGeom = sample.getInputGeom();
@@ -295,7 +297,7 @@ public class RecastDemo {
                     if (!hit.isPresent() && sample.getRecastResults() != null) {
                         hit = PolyMeshRaycast.raycast(sample.getRecastResults(), rayStart, rayEnd);
                     }
-                    float[] rayDir = new float[] {rayEnd[0] - rayStart[0], rayEnd[1] - rayStart[1], rayEnd[2] - rayStart[2]};
+                    float[] rayDir = new float[]{rayEnd[0] - rayStart[0], rayEnd[1] - rayStart[1], rayEnd[2] - rayStart[2]};
                     Tool tool = toolsUI.getTool();
                     vNormalize(rayDir);
                     if (tool != null) {
@@ -342,8 +344,8 @@ public class RecastDemo {
                     for (RecastBuilderResult result : sample.getRecastResults()) {
                         if (result.getSolidHeightfield() != null) {
                             if (bmin == null) {
-                                bmin = new float[] { Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY };
-                                bmax = new float[] { Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY };
+                                bmin = new float[]{Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY};
+                                bmax = new float[]{Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY};
                             }
                             for (int i = 0; i < 3; i++) {
                                 bmin[i] = Math.min(bmin[i], result.getSolidHeightfield().bmin[i]);
@@ -353,8 +355,7 @@ public class RecastDemo {
                     }
                 }
                 if (bmin != null && bmax != null) {
-                    camr = (float) (Math.sqrt(
-                            DemoMath.sqr(bmax[0] - bmin[0]) + DemoMath.sqr(bmax[1] - bmin[1]) + DemoMath.sqr(bmax[2] - bmin[2]))
+                    camr = (float) (Math.sqrt(DemoMath.sqr(bmax[0] - bmin[0]) + DemoMath.sqr(bmax[1] - bmin[1]) + DemoMath.sqr(bmax[2] - bmin[2]))
                             / 2);
                     cameraPos[0] = (bmax[0] + bmin[0]) / 2 + camr;
                     cameraPos[1] = (bmax[1] + bmin[1]) / 2 + camr;
@@ -385,6 +386,7 @@ public class RecastDemo {
     }
 
     private Mouse createMouse(long window) {
+        // 这个看着也是自己封装的
         Mouse mouse = new Mouse(window);
         mouse.addListener(new MouseListener() {
 
@@ -421,6 +423,7 @@ public class RecastDemo {
                         movedDuringRotate = true;
                     }
                 }
+
                 if (pan) {
                     float[] modelviewMatrix = dd.viewMatrix(cameraPos, cameraEulers);
                     cameraPos[0] = origCameraPos[0];
@@ -558,13 +561,28 @@ public class RecastDemo {
         return window;
     }
 
+    /**
+     * 这个我用的多，因为mesh文件其实就是obj文件了!!!
+     *
+     * @param stream
+     * @return
+     */
     private DemoInputGeomProvider loadInputMesh(InputStream stream) {
+        // geom这个看着是根据obj文件搞出来寻路的东西
         DemoInputGeomProvider geom = new ObjImporter().load(stream);
+
         sample = new Sample(geom, Collections.emptyList(), null, settingsUI, dd);
         toolsUI.setEnabled(true);
         return geom;
     }
 
+    /**
+     * 这个也许我用不上，因为我就用到了obj文件，最终是搞出来体素文件
+     *
+     * @param file
+     * @param filename
+     * @throws Exception
+     */
     private void loadNavMesh(File file, String filename) throws Exception {
         NavMesh mesh = null;
         if (filename.endsWith(".zip") || filename.endsWith(".bytes")) {
