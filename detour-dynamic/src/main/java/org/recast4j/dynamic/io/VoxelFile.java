@@ -68,14 +68,21 @@ public class VoxelFile {
     }
 
     public RecastConfig getConfig(VoxelTile tile, PartitionType partitionType, int maxPolyVerts, int regionMergeSize,
-            boolean filterLowHangingObstacles, boolean filterLedgeSpans, boolean filterWalkableLowHeightSpans,
-            AreaModification walkbableAreaMod, boolean buildMeshDetail, float detailSampleDist, float detailSampleMaxError) {
-        return new RecastConfig(useTiles, tileSizeX, tileSizeZ, tile.borderSize, partitionType, cellSize, tile.cellHeight,
-                walkableSlopeAngle, filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans, walkableHeight,
-                walkableRadius, walkableClimb, minRegionArea, regionMergeArea, maxEdgeLen, maxSimplificationError, maxPolyVerts,
-                buildMeshDetail, detailSampleDist, detailSampleMaxError, walkbableAreaMod);
+            boolean filterLowHangingObstacles, boolean filterLedgeSpans, boolean filterWalkableLowHeightSpans, AreaModification walkbableAreaMod,
+            boolean buildMeshDetail, float detailSampleDist, float detailSampleMaxError) {
+        return new RecastConfig(useTiles, tileSizeX, tileSizeZ, tile.borderSize, partitionType, cellSize, tile.cellHeight, walkableSlopeAngle,
+                filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans, walkableHeight, walkableRadius, walkableClimb,
+                minRegionArea, regionMergeArea, maxEdgeLen, maxSimplificationError, maxPolyVerts, buildMeshDetail, detailSampleDist,
+                detailSampleMaxError, walkbableAreaMod);
     }
 
+    /**
+     * 我们项目中使用的是这个，生成体素文件
+     *
+     * @param config
+     * @param results
+     * @return
+     */
     public static VoxelFile from(RecastConfig config, List<RecastBuilderResult> results) {
         VoxelFile f = new VoxelFile();
         f.version = 1;
@@ -99,8 +106,8 @@ public class VoxelFile {
         f.useTiles = config.useTiles;
         f.tileSizeX = config.tileSizeX;
         f.tileSizeZ = config.tileSizeZ;
-        f.bounds = new float[] { Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
-                Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY };
+        f.bounds = new float[]{Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY,
+                Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY};
         for (RecastBuilderResult r : results) {
             f.tiles.add(new VoxelTile(r.tileX, r.tileZ, r.getSolidHeightfield()));
             f.bounds[0] = Math.min(f.bounds[0], r.getSolidHeightfield().bmin[0]);
@@ -137,8 +144,8 @@ public class VoxelFile {
         f.useTiles = config.useTiles;
         f.tileSizeX = config.tileSizeX;
         f.tileSizeZ = config.tileSizeZ;
-        f.bounds = new float[] { Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
-                Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY };
+        f.bounds = new float[]{Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY,
+                Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY};
         for (VoxelTile vt : mesh.voxelTiles()) {
             Heightfield heightfield = vt.heightfield();
             f.tiles.add(new VoxelTile(vt.tileX, vt.tileZ, heightfield));

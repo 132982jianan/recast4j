@@ -451,6 +451,7 @@ public class DynamicUpdateTool implements Tool {
                 nk_layout_row_dynamic(ctx, 18, 1);
                 compression = nk_check_text(ctx, "Compression", compression);
                 if (nk_button_text(ctx, "Save Voxels...")) {
+                    //
                     save();
                 }
             }
@@ -634,13 +635,19 @@ public class DynamicUpdateTool implements Tool {
             aFilterPatterns.put(stack.UTF8("*.voxels"));
             aFilterPatterns.flip();
             String filename = TinyFileDialogs.tinyfd_saveFileDialog("Save Voxel File", "", aFilterPatterns, "Voxel File");
+
             if (filename != null) {
+                //
                 save(filename);
             }
         }
 
     }
 
+    /**
+     * 根据动态navMesh生成体素文件
+     * @param filename
+     */
     private void save(String filename) {
         File file = new File(filename);
         try (FileOutputStream fos = new FileOutputStream(file)) {

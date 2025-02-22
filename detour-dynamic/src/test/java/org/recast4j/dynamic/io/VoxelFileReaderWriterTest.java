@@ -58,6 +58,7 @@ public class VoxelFileReaderWriterTest {
     @ParameterizedTest
     @ValueSource(booleans = {false, true})
     public void shouldReadMultiTileFile(boolean compression) throws IOException {
+        // 拿到这个文件，并且写入
         try (InputStream is = getClass().getClassLoader().getResourceAsStream("test_tiles.voxels")) {
             VoxelFile f = readWriteRead(is, compression);
             assertThat(f.useTiles).isTrue();
@@ -85,9 +86,12 @@ public class VoxelFileReaderWriterTest {
     private VoxelFile readWriteRead(InputStream is, boolean compression) throws IOException {
         VoxelFileReader reader = new VoxelFileReader();
         VoxelFile f = reader.read(is);
+
+        // 写入体素文件
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         VoxelFileWriter writer = new VoxelFileWriter();
         writer.write(out, f, compression);
+
         return reader.read(new ByteArrayInputStream(out.toByteArray()));
     }
 
