@@ -93,11 +93,14 @@ public class VoxelQueryTest {
         DynamicNavMesh mesh;
         try (InputStream is = getClass().getClassLoader().getResourceAsStream("test_tiles.voxels")) {
             ExecutorService executor = TestExecutorService.get();
+
             // load voxels from file
             VoxelFileReader reader = new VoxelFileReader();
             VoxelFile f = reader.read(is);
+
             // create dynamic navmesh
             mesh = new DynamicNavMesh(f);
+
             // build navmesh asynchronously using multiple threads
             CompletableFuture<Boolean> future = mesh.build(executor);
             // wait for build to complete

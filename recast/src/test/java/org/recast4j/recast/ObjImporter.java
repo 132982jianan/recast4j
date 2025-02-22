@@ -30,10 +30,17 @@ import org.recast4j.recast.geom.SimpleInputGeomProvider;
 public class ObjImporter {
 
     private class ObjImporterContext {
+
         List<Float> vertexPositions = new ArrayList<>();
         List<Integer> meshFaces = new ArrayList<>();
     }
 
+    /**
+     * 加载obj文件
+     *
+     * @param is
+     * @return
+     */
     public InputGeomProvider load(InputStream is) {
         ObjImporterContext context = new ObjImporterContext();
         BufferedReader reader = null;
@@ -81,7 +88,7 @@ public class ObjImporter {
         if (v.length < 4) {
             throw new RuntimeException("Invalid vector, expected 3 coordinates, found " + (v.length - 1));
         }
-        return new float[] { Float.parseFloat(v[1]), Float.parseFloat(v[2]), Float.parseFloat(v[3]) };
+        return new float[]{Float.parseFloat(v[1]), Float.parseFloat(v[2]), Float.parseFloat(v[3])};
     }
 
     private void readFace(String line, ObjImporterContext context) {

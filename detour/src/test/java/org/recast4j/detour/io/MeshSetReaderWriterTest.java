@@ -105,7 +105,7 @@ public class MeshSetReaderWriterTest {
             }
         }
 
-        // 写进去
+        // 写进去(但是其实上没有写文件)
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         writer.write(os, mesh, ByteOrder.LITTLE_ENDIAN, true);
 

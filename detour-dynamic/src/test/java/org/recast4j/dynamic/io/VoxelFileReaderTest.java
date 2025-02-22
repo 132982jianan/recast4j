@@ -32,6 +32,7 @@ public class VoxelFileReaderTest {
         try (InputStream is = getClass().getClassLoader().getResourceAsStream("test.voxels")) {
             VoxelFileReader reader = new VoxelFileReader();
             VoxelFile f = reader.read(is);
+
             assertThat(f.useTiles).isFalse();
             assertThat(f.bounds).containsExactly(-100.0f, 0f, -100f, 100f, 5f, 100f);
             assertThat(f.cellSize).isEqualTo(0.25f);
