@@ -20,81 +20,77 @@ package org.recast4j.detour;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.offset;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 /**
- * 瀵昏矾
+ * 寻路
  */
 public class FindPathTest extends AbstractDetourTest {
 
-    private static final Status[] STATUSES = { Status.SUCCSESS, Status.PARTIAL_RESULT, Status.SUCCSESS, Status.SUCCSESS,
-            Status.SUCCSESS };
+    private static final Status[] STATUSES = {Status.SUCCSESS, Status.PARTIAL_RESULT, Status.SUCCSESS, Status.SUCCSESS, Status.SUCCSESS};
     private static final long[][] RESULTS = {
-            { 281474976710696L, 281474976710695L, 281474976710694L, 281474976710703L, 281474976710706L,
-                    281474976710705L, 281474976710702L, 281474976710701L, 281474976710714L, 281474976710713L,
-                    281474976710712L, 281474976710727L, 281474976710730L, 281474976710717L, 281474976710721L },
-            { 281474976710773L, 281474976710772L, 281474976710768L, 281474976710754L, 281474976710755L,
-                    281474976710753L, 281474976710748L, 281474976710752L, 281474976710731L, 281474976710729L,
-                    281474976710717L, 281474976710724L, 281474976710728L, 281474976710737L, 281474976710738L,
-                    281474976710736L, 281474976710733L, 281474976710735L, 281474976710742L, 281474976710740L,
-                    281474976710746L, 281474976710745L, 281474976710744L },
-            { 281474976710680L, 281474976710684L, 281474976710688L, 281474976710687L, 281474976710686L,
-                    281474976710697L, 281474976710695L, 281474976710694L, 281474976710703L, 281474976710706L,
-                    281474976710705L, 281474976710702L, 281474976710701L, 281474976710714L, 281474976710713L,
-                    281474976710712L, 281474976710727L, 281474976710730L, 281474976710717L, 281474976710729L,
-                    281474976710731L, 281474976710752L, 281474976710748L, 281474976710753L, 281474976710755L,
-                    281474976710754L, 281474976710768L, 281474976710772L, 281474976710773L, 281474976710770L,
-                    281474976710757L, 281474976710761L, 281474976710758L },
-            { 281474976710753L, 281474976710748L, 281474976710752L, 281474976710731L },
-            { 281474976710733L, 281474976710736L, 281474976710738L, 281474976710737L, 281474976710728L,
-                    281474976710724L, 281474976710717L, 281474976710729L, 281474976710731L, 281474976710752L,
-                    281474976710748L, 281474976710753L, 281474976710755L, 281474976710754L, 281474976710768L,
-                    281474976710772L } };
+            {281474976710696L, 281474976710695L, 281474976710694L, 281474976710703L, 281474976710706L, 281474976710705L, 281474976710702L,
+                    281474976710701L, 281474976710714L, 281474976710713L, 281474976710712L, 281474976710727L, 281474976710730L, 281474976710717L,
+                    281474976710721L},
+            {281474976710773L, 281474976710772L, 281474976710768L, 281474976710754L, 281474976710755L, 281474976710753L, 281474976710748L,
+                    281474976710752L, 281474976710731L, 281474976710729L, 281474976710717L, 281474976710724L, 281474976710728L, 281474976710737L,
+                    281474976710738L, 281474976710736L, 281474976710733L, 281474976710735L, 281474976710742L, 281474976710740L, 281474976710746L,
+                    281474976710745L, 281474976710744L},
+            {281474976710680L, 281474976710684L, 281474976710688L, 281474976710687L, 281474976710686L, 281474976710697L, 281474976710695L,
+                    281474976710694L, 281474976710703L, 281474976710706L, 281474976710705L, 281474976710702L, 281474976710701L, 281474976710714L,
+                    281474976710713L, 281474976710712L, 281474976710727L, 281474976710730L, 281474976710717L, 281474976710729L, 281474976710731L,
+                    281474976710752L, 281474976710748L, 281474976710753L, 281474976710755L, 281474976710754L, 281474976710768L, 281474976710772L,
+                    281474976710773L, 281474976710770L, 281474976710757L, 281474976710761L, 281474976710758L},
+            {281474976710753L, 281474976710748L, 281474976710752L, 281474976710731L},
+            {281474976710733L, 281474976710736L, 281474976710738L, 281474976710737L, 281474976710728L, 281474976710724L, 281474976710717L,
+                    281474976710729L, 281474976710731L, 281474976710752L, 281474976710748L, 281474976710753L, 281474976710755L, 281474976710754L,
+                    281474976710768L, 281474976710772L}};
 
     private static final StraightPathItem[][] STRAIGHT_PATHS = {
-            { new StraightPathItem(new float[] { 22.606520f, 10.197294f, -45.918674f }, 1, 281474976710696L),
-                    new StraightPathItem(new float[] { 3.484785f, 10.197294f, -34.241272f }, 0, 281474976710713L),
-                    new StraightPathItem(new float[] { 1.984785f, 10.197294f, -31.241272f }, 0, 281474976710712L),
-                    new StraightPathItem(new float[] { 1.984785f, 10.197294f, -29.741272f }, 0, 281474976710727L),
-                    new StraightPathItem(new float[] { 2.584784f, 10.197294f, -27.941273f }, 0, 281474976710730L),
-                    new StraightPathItem(new float[] { 6.457663f, 10.197294f, -18.334061f }, 2, 0L) },
+            {new StraightPathItem(new float[]{22.606520f, 10.197294f, -45.918674f}, 1, 281474976710696L),
+                    new StraightPathItem(new float[]{3.484785f, 10.197294f, -34.241272f}, 0, 281474976710713L),
+                    new StraightPathItem(new float[]{1.984785f, 10.197294f, -31.241272f}, 0, 281474976710712L),
+                    new StraightPathItem(new float[]{1.984785f, 10.197294f, -29.741272f}, 0, 281474976710727L),
+                    new StraightPathItem(new float[]{2.584784f, 10.197294f, -27.941273f}, 0, 281474976710730L),
+                    new StraightPathItem(new float[]{6.457663f, 10.197294f, -18.334061f}, 2, 0L)},
 
-            { new StraightPathItem(new float[] { 22.331268f, 10.197294f, -1.040187f }, 1, 281474976710773L),
-                    new StraightPathItem(new float[] { 9.784786f, 10.197294f, -2.141273f }, 0, 281474976710755L),
-                    new StraightPathItem(new float[] { 7.984783f, 10.197294f, -2.441269f }, 0, 281474976710753L),
-                    new StraightPathItem(new float[] { 1.984785f, 10.197294f, -8.441269f }, 0, 281474976710752L),
-                    new StraightPathItem(new float[] { -4.315216f, 10.197294f, -15.341270f }, 0, 281474976710724L),
-                    new StraightPathItem(new float[] { -8.215216f, 10.197294f, -17.441269f }, 0, 281474976710728L),
-                    new StraightPathItem(new float[] { -10.015216f, 10.197294f, -17.741272f }, 0, 281474976710738L),
-                    new StraightPathItem(new float[] { -11.815216f, 9.997294f, -17.441269f }, 0, 281474976710736L),
-                    new StraightPathItem(new float[] { -17.815216f, 5.197294f, -11.441269f }, 0, 281474976710735L),
-                    new StraightPathItem(new float[] { -17.815216f, 5.197294f, -8.441269f }, 0, 281474976710746L),
-                    new StraightPathItem(new float[] { -11.815216f, 0.197294f, 3.008419f }, 2, 0L) },
+            {new StraightPathItem(new float[]{22.331268f, 10.197294f, -1.040187f}, 1, 281474976710773L),
+                    new StraightPathItem(new float[]{9.784786f, 10.197294f, -2.141273f}, 0, 281474976710755L),
+                    new StraightPathItem(new float[]{7.984783f, 10.197294f, -2.441269f}, 0, 281474976710753L),
+                    new StraightPathItem(new float[]{1.984785f, 10.197294f, -8.441269f}, 0, 281474976710752L),
+                    new StraightPathItem(new float[]{-4.315216f, 10.197294f, -15.341270f}, 0, 281474976710724L),
+                    new StraightPathItem(new float[]{-8.215216f, 10.197294f, -17.441269f}, 0, 281474976710728L),
+                    new StraightPathItem(new float[]{-10.015216f, 10.197294f, -17.741272f}, 0, 281474976710738L),
+                    new StraightPathItem(new float[]{-11.815216f, 9.997294f, -17.441269f}, 0, 281474976710736L),
+                    new StraightPathItem(new float[]{-17.815216f, 5.197294f, -11.441269f}, 0, 281474976710735L),
+                    new StraightPathItem(new float[]{-17.815216f, 5.197294f, -8.441269f}, 0, 281474976710746L),
+                    new StraightPathItem(new float[]{-11.815216f, 0.197294f, 3.008419f}, 2, 0L)},
 
-            { new StraightPathItem(new float[] { 18.694363f, 15.803535f, -73.090416f }, 1, 281474976710680L),
-                    new StraightPathItem(new float[] { 17.584785f, 10.197294f, -49.841274f }, 0, 281474976710697L),
-                    new StraightPathItem(new float[] { 17.284786f, 10.197294f, -48.041275f }, 0, 281474976710695L),
-                    new StraightPathItem(new float[] { 16.084785f, 10.197294f, -45.341274f }, 0, 281474976710694L),
-                    new StraightPathItem(new float[] { 3.484785f, 10.197294f, -34.241272f }, 0, 281474976710713L),
-                    new StraightPathItem(new float[] { 1.984785f, 10.197294f, -31.241272f }, 0, 281474976710712L),
-                    new StraightPathItem(new float[] { 1.984785f, 10.197294f, -8.441269f }, 0, 281474976710753L),
-                    new StraightPathItem(new float[] { 7.984783f, 10.197294f, -2.441269f }, 0, 281474976710755L),
-                    new StraightPathItem(new float[] { 9.784786f, 10.197294f, -2.141273f }, 0, 281474976710768L),
-                    new StraightPathItem(new float[] { 38.423977f, 10.197294f, -0.116067f }, 2, 0L) },
+            {new StraightPathItem(new float[]{18.694363f, 15.803535f, -73.090416f}, 1, 281474976710680L),
+                    new StraightPathItem(new float[]{17.584785f, 10.197294f, -49.841274f}, 0, 281474976710697L),
+                    new StraightPathItem(new float[]{17.284786f, 10.197294f, -48.041275f}, 0, 281474976710695L),
+                    new StraightPathItem(new float[]{16.084785f, 10.197294f, -45.341274f}, 0, 281474976710694L),
+                    new StraightPathItem(new float[]{3.484785f, 10.197294f, -34.241272f}, 0, 281474976710713L),
+                    new StraightPathItem(new float[]{1.984785f, 10.197294f, -31.241272f}, 0, 281474976710712L),
+                    new StraightPathItem(new float[]{1.984785f, 10.197294f, -8.441269f}, 0, 281474976710753L),
+                    new StraightPathItem(new float[]{7.984783f, 10.197294f, -2.441269f}, 0, 281474976710755L),
+                    new StraightPathItem(new float[]{9.784786f, 10.197294f, -2.141273f}, 0, 281474976710768L),
+                    new StraightPathItem(new float[]{38.423977f, 10.197294f, -0.116067f}, 2, 0L)},
 
-            { new StraightPathItem(new float[] { 0.745335f, 10.197294f, -5.940050f }, 1, 281474976710753L),
-                    new StraightPathItem(new float[] { 0.863553f, 10.197294f, -10.310320f }, 2, 0L) },
+            {new StraightPathItem(new float[]{0.745335f, 10.197294f, -5.940050f}, 1, 281474976710753L),
+                    new StraightPathItem(new float[]{0.863553f, 10.197294f, -10.310320f}, 2, 0L)},
 
-            { new StraightPathItem(new float[] { -20.651257f, 5.904126f, -13.712508f }, 1, 281474976710733L),
-                    new StraightPathItem(new float[] { -11.815216f, 9.997294f, -17.441269f }, 0, 281474976710738L),
-                    new StraightPathItem(new float[] { -10.015216f, 10.197294f, -17.741272f }, 0, 281474976710728L),
-                    new StraightPathItem(new float[] { -8.215216f, 10.197294f, -17.441269f }, 0, 281474976710724L),
-                    new StraightPathItem(new float[] { -4.315216f, 10.197294f, -15.341270f }, 0, 281474976710729L),
-                    new StraightPathItem(new float[] { 1.984785f, 10.197294f, -8.441269f }, 0, 281474976710753L),
-                    new StraightPathItem(new float[] { 7.984783f, 10.197294f, -2.441269f }, 0, 281474976710755L),
-                    new StraightPathItem(new float[] { 18.784092f, 10.197294f, 3.054368f }, 2, 0L) } };
+            {new StraightPathItem(new float[]{-20.651257f, 5.904126f, -13.712508f}, 1, 281474976710733L),
+                    new StraightPathItem(new float[]{-11.815216f, 9.997294f, -17.441269f}, 0, 281474976710738L),
+                    new StraightPathItem(new float[]{-10.015216f, 10.197294f, -17.741272f}, 0, 281474976710728L),
+                    new StraightPathItem(new float[]{-8.215216f, 10.197294f, -17.441269f}, 0, 281474976710724L),
+                    new StraightPathItem(new float[]{-4.315216f, 10.197294f, -15.341270f}, 0, 281474976710729L),
+                    new StraightPathItem(new float[]{1.984785f, 10.197294f, -8.441269f}, 0, 281474976710753L),
+                    new StraightPathItem(new float[]{7.984783f, 10.197294f, -2.441269f}, 0, 281474976710755L),
+                    new StraightPathItem(new float[]{18.784092f, 10.197294f, 3.054368f}, 2, 0L)}};
 
     @Test
     public void testFindPath() {
@@ -146,9 +142,14 @@ public class FindPathTest extends AbstractDetourTest {
             float[] startPos = startPoss[i];
             float[] endPos = endPoss[i];
             Result<List<Long>> path = query.findPath(startRef, endRef, startPos, endPos, filter);
-            Result<List<StraightPathItem>> result = query.findStraightPath(startPos, endPos, path.result,
-                    Integer.MAX_VALUE, 0);
+
+            // 重点方法：拉直后!!!
+            Result<List<StraightPathItem>> result = query.findStraightPath(startPos, endPos, path.result, Integer.MAX_VALUE, 0);
+
+            // 根据这个
             List<StraightPathItem> straightPath = result.result;
+
+
             assertThat(straightPath).hasSize(STRAIGHT_PATHS[i].length);
             for (int j = 0; j < STRAIGHT_PATHS[i].length; j++) {
                 assertThat(straightPath.get(j).ref).isEqualTo(STRAIGHT_PATHS[i][j].ref);
@@ -156,6 +157,17 @@ public class FindPathTest extends AbstractDetourTest {
                     assertThat(straightPath.get(j).pos[v]).isEqualTo(STRAIGHT_PATHS[i][j].pos[v], offset(0.01f));
                 }
                 assertThat(straightPath.get(j).flags).isEqualTo(STRAIGHT_PATHS[i][j].flags);
+            }
+
+            // 最终的坐标
+            List<float[]> resultPathPoint = new ArrayList<>();
+            for (StraightPathItem straightPathItem : straightPath) {
+                resultPathPoint.add(straightPathItem.getPos());
+            }
+
+            System.out.println("--------");
+            for (float[] pos : resultPathPoint) {
+                System.out.println("[" + pos[0] + "," + pos[1] + "," + pos[2] + "]");
             }
         }
     }

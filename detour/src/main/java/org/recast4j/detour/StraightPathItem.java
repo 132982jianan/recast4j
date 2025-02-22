@@ -22,6 +22,8 @@ import static org.recast4j.detour.DetourCommon.vCopy;
 
 //TODO: (PP) Add comments
 public class StraightPathItem {
+
+    // 这个就是拉直后的坐标了!!!
     float[] pos;
     int flags;
     long ref;
